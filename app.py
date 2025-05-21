@@ -133,11 +133,20 @@ if st.session_state.page == "home":
     with tabs[2]:
         uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
         if uploaded_audio:
-            rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
+            uploaded_bytes = uploaded_audio.read()
+            try:
+                rate, data = wavfile.read(io.BytesIO(uploaded_bytes))
+            except Exception as e:
+                st.error(f"Failed to read WAV file: {e}")
+
             if data.ndim > 1:
                 data = data[:, 0]
             signal = np.abs(data)
-            threshold = 0.3 * np.max(signal)
+            threshold = np.percentile(signal, 90) * 0.5  # More robust
+
+            if data is None or not isinstance(data, np.ndarray):
+                st.error("Invalid WAV file data.")
+                st.stop()
 
             bits = (signal > threshold).astype(int)
             dot_length = rate // 10
