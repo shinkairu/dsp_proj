@@ -6,8 +6,8 @@ import numpy as np
 from scipy.io import wavfile
 import io
 
-st.set_page_config(page_title="Morse Code Translator", layout="centered")
-st.title("📡 Morse Code Translator")
+st.set_page_config(page_title="Morse Code Translator + Decoder", layout="centered")
+st.title("📡 Morse Code Translator + Decoder")
 
 def ocr_image_from_url(image_bytes):
     response = requests.post(
